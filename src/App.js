@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const initialItems = [
   {
     id: 1,
@@ -24,19 +26,56 @@ export default function App() {
 }
 
 function Logo() {
-  return <h1>Far Away</h1>;
+  return (
+    <div className="logo">
+      <h1> 🌴 Far Away 💼</h1>
+    </div>
+  );
 }
 function Form() {
+  const [quantity, setQuantity] = useState(1);
+  const [description, setDescription] = useState("");
+  const [items, setItems] = useState([]);
+  function handleSubmit(e) {
+    e.preventDefault();
+    const newItem = {
+      id: Date.now(),
+      description,
+      quantity,
+      packed: false,
+    };
+    setItems(items, newItem);
+  }
   return (
     <div className="add-form">
-      <form>
-        <label>What do you need for your 😍 trip?</label>
-        <select name="description">
-          <option defaultChecked>Hello</option>
-          <option>Hello</option>
-        </select>
-        <input type="text" placeholder="Item...." />
-        <input type="submit" value="ADD" />
+      <form onSubmit={handleSubmit}>
+        <div className="form-control">
+          <label>What do you need for your 😍 trip?</label>
+          <select
+            name="description"
+            value={quantity}
+            onChange={(e) => {
+              setQuantity(Number(e.target.value));
+            }}
+          >
+            {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+              <option value={num}>{num}</option>
+            ))}
+          </select>
+        </div>
+        <div className="form-control">
+          <input
+            type="text"
+            placeholder="Item...."
+            value={description}
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
+          />
+        </div>
+        <div className="form-control">
+          <input type="submit" value="ADD" />
+        </div>
       </form>
     </div>
   );
@@ -49,18 +88,20 @@ function PackingList() {
           <Item key={item.id} item={item} />
         ))}
       </ul>
-      <select name="order" id="order">
-        <option defaultChecked>Hello</option>
-        <option>Hello</option>
-      </select>
-      <button>Reset</button>
+      <div className="sort">
+        <select name="order" id="order">
+          <option defaultChecked>Hello</option>
+          <option>Hello</option>
+        </select>
+        <button>Reset</button>
+      </div>
     </div>
   );
 }
 function Item({ item }) {
   return (
     <li>
-      <span>
+      <span className={item.packed ? "packed" : ""}>
         {item.quantity} {item.description}
       </span>
       <button>X</button>
